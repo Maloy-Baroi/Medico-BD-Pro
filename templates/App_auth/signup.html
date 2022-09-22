@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>Medico BD | Signup</title>
+    <style>
+        body {
+            background-color: rgb(228, 229, 247);
+        }
+
+        .social-login img {
+            width: 24px;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .card {
+            font-family: sans-serif;
+            width: 300px;
+            margin: 1rem auto;
+            border-radius: 10px;
+            background-color: #ffff;
+            padding: 1.8rem;
+            box-shadow: 2px 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        @media only screen and (max-width: 380px) {
+            .card {
+                font-family: sans-serif;
+                width: 275px;
+                margin: 1rem auto;
+                border-radius: 10px;
+                background-color: #ffff;
+                padding: 1.8rem;
+                box-shadow: 2px 5px 20px rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        @media only screen and (max-width: 350px) {
+            .card {
+                font-family: sans-serif;
+                width: 245px;
+                margin: 1rem auto;
+                border-radius: 10px;
+                background-color: #ffff;
+                padding: 1.8rem;
+                box-shadow: 2px 5px 20px rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        @media only screen and (max-width: 310px) {
+            .card {
+                font-family: sans-serif;
+                width: 200px;
+                margin: 1rem auto;
+                border-radius: 10px;
+                background-color: #ffff;
+                padding: 1.8rem;
+                box-shadow: 2px 5px 20px rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        .title {
+            text-align: center;
+            font-weight: bold;
+            margin: 10px auto;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .btn-text {
+            margin: 0;
+        }
+
+        .social-login {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .google-btn {
+            background: #fff;
+            border: solid 2px rgb(245 239 239);
+            border-radius: 8px;
+            font-weight: bold;
+            display: flex;
+            padding: 10px 10px;
+            flex: auto;
+            align-items: center;
+            gap: 5px;
+            justify-content: center;
+        }
+
+        .fb-btn {
+            background: #fff;
+            border: solid 2px rgb(69, 69, 185);
+            border-radius: 8px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .or {
+            text-align: center;
+            font-weight: bold;
+            border-bottom: 2px solid rgb(245 239 239);
+            line-height: 0.1em;
+            margin: 25px 0;
+        }
+
+        .or span {
+            background: #fff;
+            padding: 0 10px;
+        }
+
+        .email-login {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .email-login label {
+            color: rgb(170 166 166);
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            padding: 15px 20px;
+            margin-top: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        .cta-btn {
+            background-color: rgb(69, 69, 185);
+            color: white;
+            padding: 18px 20px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+            border-radius: 10px;
+            border: none;
+        }
+
+        .forget-pass {
+            text-align: center;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <form method="post" action="{% url 'App_auth:signup' %}">
+        {% csrf_token %}
+        <h2 class="title">Signup</h2>
+        <div class="social-login">
+            <button class="google-btn" type="button" onclick="window.location.href='{% url "App_auth:login-or-signup" %}'">
+                <p class="btn-text">Login in Medico-BD</p>
+            </button>
+        </div>
+
+        <p class="or"><span>or</span></p>
+
+        <div class="email-login">
+            <label for="email"> <b>Email <sup>*</sup></b></label>
+            <input type="email" placeholder="Enter Email" name="email" id="id-email" required>
+            <label for="psw"><b>Password <sup>*</sup></b></label>
+            <input type="password" placeholder="Enter Password" name="password" id="id-password" required>
+        </div>
+        <button class="cta-btn" type="button" onclick="usersCheck()">Signup</button>
+        <button class="cta-btn" type="submit" style="display: none;" id="id-submitBtn">Signup</button>
+        <a class="forget-pass" href="#">Forgot password?</a>
+    </form>
+</div>
+
+<script type="text/javascript">
+    let users = JSON.parse("{{users|escapejs}}");
+    let email = document.getElementById("id-email");
+    let password = document.getElementById("id-password");
+    let submitBtn = document.getElementById("id-submitBtn");
+
+    const usersCheck = () => {
+        for (let i = 0; i < users["users"].length; i++) {
+            if (email.value === users["users"][i]) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'You are already registered.',
+                    footer: "<a href='{% url "App_auth:login-or-signup" %}'>Let's Login?</a>"
+                  })
+                break;
+            }
+            else {
+                if (email.value !== "" && password.value !== "")
+                {
+                    submitBtn.click();
+                }
+                break;
+            }
+        }
+    }
+</script>
+</body>
+</html>
